@@ -61,14 +61,13 @@ No manual installation is required. Package versions are recorded using `renv`.
 
 To reproduce the analysis, run the scripts in the following order:
 ```
-source("00_libraries.R")
-source("01_data_cleaning.R")
-source("02_missingness_summary.R")
-source("03_eda.R")
-source("04_km_analysis.R")
-source("05_cox_models.R")
-source("06_model_diagnostics.R")
-source("07_final_figures_tables.R")
+source("scripts/00_libraries.R")
+source("scripts/01_data_cleaning.R")
+source("scripts/02_missingness_summary.R")
+source("scripts/03_eda.R")
+source("scripts/04_km_analysis.R")
+source("scripts/05_cox_models.R")
+source("scripts/06_model_diagnostics.R")
 ```
 ### Output
 Running the scripts will generate:
