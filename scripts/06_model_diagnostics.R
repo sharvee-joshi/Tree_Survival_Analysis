@@ -129,7 +129,7 @@ ph_all_table %>%
 # 6. Save proportional hazards diagnostic plots
 # ------------------------------------------------------------------
 png(
-  filename = "figures/ph_diagnostic_main_amf_model.png",
+  filename = "figures/ph_diagnostic_main__model.png",
   width = 1000,
   height = 800
 )
@@ -140,7 +140,7 @@ dev.off()
 
 
 png(
-  filename = "ph_diagnostic_amf_model.png",
+  filename = "ph_diagnostic_exploratory_model.png",
   width = 1000,
   height = 800
 )
