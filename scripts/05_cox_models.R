@@ -9,19 +9,19 @@
 # 0. Load libraries
 # ------------------------------------------------------------------
 
-source("00_libraries.R")
+source("scripts/00_libraries.R")
 
 # ------------------------------------------------------------------
 # 1. Load cleaned data
 # ------------------------------------------------------------------
+load("data/tree_clean.RData")
+load("data/tree_no_none.RData")
 
-load("tree_main.RData")
-load("tree_clean.RData")
 
 # ------------------------------------------------------------------
 # 2. Make sure categorical variables are coded as factors
 # ------------------------------------------------------------------
-tree_main <- tree_main %>%
+tree_main <- tree_no_none %>%
   mutate(
     species = factor(species),
     light = factor(light),
@@ -38,7 +38,7 @@ tree_amf <- tree_clean %>%
     light = factor(light),
     microbe = factor(microbe),
     event = as.numeric(event),
-    amf_imp_z = as.numeric(scale(amf_imp))
+    amf_imp_z = as.numeric(scale(amf_imp)) 
   )
 
 glimpse(tree_amf)
@@ -48,8 +48,7 @@ glimpse(tree_amf)
 # ------------------------------------------------------------------
 
 make_cox_table <- function(cox_model) {
-  
-  broom::tidy(
+  tidy(
     cox_model,
     exponentiate = TRUE,
     conf.int = TRUE
@@ -84,7 +83,9 @@ tree_amf <- tree_clean %>%
     microbe = factor(microbe),
     event = as.numeric(event),
     amf_imp_z = as.numeric(scale(amf_imp))
-  )
+  ) %>%
+  filter(microbe != "None") %>%
+  mutate(microbe = droplevels(factor(microbe)))
 
 # Check whether amf_imp actually has missing values
 amf_missing_check <- tibble(
@@ -94,7 +95,7 @@ amf_missing_check <- tibble(
 )
 
 amf_missing_check %>%
-  knitr::kable(
+  kable(
     caption = "Missingness Check for Imputed AMF Variable",
     digits = 2
   ) %>%
@@ -113,14 +114,16 @@ amf_model_data <- tree_clean %>%
     microbe = factor(microbe),
     event = as.numeric(event),
     amf_imp_z = as.numeric(scale(amf_imp))
-  )
-
+  ) %>%
+  filter(microbe != "None") %>%
+  mutate(microbe = droplevels(factor(microbe)))
+ 
 nrow(amf_model_data)
 # ------------------------------------------------------------------
 # 5. Main Cox model refit on AMF model dataset
 # ------------------------------------------------------------------
-cox_main_amf <- survival::coxph(
-  survival::Surv(time, event) ~ species + light + microbe,
+cox_main_amf <- coxph(
+  Surv(time, event) ~ species + light + microbe,
   data = amf_model_data,
   model = TRUE
 )
@@ -128,12 +131,12 @@ cox_main_amf <- survival::coxph(
 cox_main_amf_table <- make_cox_table(cox_main_amf)
 
 cox_main_amf_table %>%
-  knitr::kable(
+  kable(
     caption = "Main Cox Model Refit on AMF Model Dataset",
     digits = 4,
     align = "lrrrrrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -141,9 +144,8 @@ cox_main_amf_table %>%
 # ------------------------------------------------------------------
 # 6. Exploratory Cox model including imputed AMF
 # ------------------------------------------------------------------
-
-cox_amf <- survival::coxph(
-  survival::Surv(time, event) ~ species + light + microbe + amf_imp_z,
+cox_amf <- coxph(
+  Surv(time, event) ~ species + light + microbe + amf_imp_z,
   data = amf_model_data,
   model = TRUE
 )
@@ -152,12 +154,12 @@ cox_amf_table <- make_cox_table(cox_amf)
 
 write.csv(
   cox_amf_table,
-  file = "cox_amf_imp_results.csv",
+  file = "results/cox_amf_imp_results.csv",
   row.names = FALSE
 )
 
 cox_amf_table %>%
-  knitr::kable(
+  kable(
     caption = "Exploratory Cox Model Including Imputed AMF",
     digits = 4,
     align = "lrrrrrr"
@@ -177,7 +179,6 @@ amf_lrt <- anova(
   test = "LRT"
 )
 
-
 print(amf_lrt)
 
 
@@ -192,5 +193,5 @@ save(
   cox_amf_table,
   amf_lrt,
   amf_model_data,
-  file = "cox_model_results.RData"
+  file = "results/cox_model_results.RData"
 )
