@@ -1,0 +1,6 @@
+"Model","Term","Chi-Square","Degrees of Freedom","P-Value"
+"Exploratory AMF Cox Model","species",13.88,2,0.001
+"Exploratory AMF Cox Model","light",13.746,1,0.0002
+"Exploratory AMF Cox Model","microbe",32.555,3,0
+"Exploratory AMF Cox Model","amf_imp_z",17.549,1,0
+"Exploratory AMF Cox Model","GLOBAL",62.047,7,0

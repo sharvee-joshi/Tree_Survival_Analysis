@@ -9,13 +9,13 @@
 # 0. Load libraries
 # ------------------------------------------------------------------
 
-source("00_libraries.R")
+source("scripts/00_libraries.R")
 
 # ------------------------------------------------------------------
 # 1. Load cleaned data
 # ------------------------------------------------------------------
 
-load("cox_model_results.RData")
+load("results/cox_model_results.RData")
 # ------------------------------------------------------------------
 # 2. Helper function for proportional hazards test tables
 # ------------------------------------------------------------------
@@ -23,8 +23,8 @@ load("cox_model_results.RData")
 make_ph_table <- function(ph_object, model_name) {
   
   as.data.frame(ph_object$table) %>%
-    tibble::rownames_to_column("term") %>%
-    janitor::clean_names() %>%
+    rownames_to_column("term") %>%
+    clean_names() %>%
     mutate(
       model = model_name,
       chisq = round(chisq, 3),
@@ -43,7 +43,7 @@ make_ph_table <- function(ph_object, model_name) {
 # 3. Proportional hazards test: main AMF-dataset Cox model
 # ------------------------------------------------------------------
 
-ph_main_amf <- survival::cox.zph(cox_main_amf)
+ph_main_amf <- cox.zph(cox_main_amf)
 
 print(ph_main_amf)
 
@@ -54,17 +54,17 @@ ph_main_amf_table <- make_ph_table(
 
 write.csv(
   ph_main_amf_table,
-  file = "ph_test_main_amf_model.csv",
+  file = "results/ph_test_main_amf_model.csv",
   row.names = FALSE
 )
 
 ph_main_amf_table %>%
-  knitr::kable(
+  kable(
     caption = "Proportional Hazards Test for Main Cox Model on AMF Dataset",
     digits = 4,
     align = "llrrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -73,7 +73,7 @@ ph_main_amf_table %>%
 # 4. Proportional hazards test: exploratory Cox model with AMF
 # ------------------------------------------------------------------
 
-ph_amf <- survival::cox.zph(cox_amf)
+ph_amf <- cox.zph(cox_amf)
 
 print(ph_amf)
 
@@ -84,17 +84,17 @@ ph_amf_table <- make_ph_table(
 
 write.csv(
   ph_amf_table,
-  file = "ph_test_amf_model.csv",
+  file = "results/ph_test_amf_model.csv",
   row.names = FALSE
 )
 
 ph_amf_table %>%
-  knitr::kable(
+  kable(
     caption = "Proportional Hazards Test for Exploratory AMF Cox Model",
     digits = 4,
     align = "llrrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -110,12 +110,12 @@ ph_all_table <- bind_rows(
 
 write.csv(
   ph_all_table,
-  file = "ph_test_all_models.csv",
+  file = "results/ph_test_all_models.csv",
   row.names = FALSE
 )
 
 ph_all_table %>%
-  knitr::kable(
+  kable(
     caption = "Summary of Proportional Hazards Tests",
     digits = 4,
     align = "llrrr"
@@ -128,9 +128,8 @@ ph_all_table %>%
 # ------------------------------------------------------------------
 # 6. Save proportional hazards diagnostic plots
 # ------------------------------------------------------------------
-
 png(
-  filename = "ph_diagnostic_main_amf_model.png",
+  filename = "figures/ph_diagnostic_main_amf_model.png",
   width = 1000,
   height = 800
 )
@@ -173,6 +172,14 @@ martingale_amf_plot <- ggplot(
   )
 
 print(martingale_amf_plot)
+ggsave(
+  filename = here::here("figures", "martingale_amf_plot.png"),
+  plot = martingale_amf_plot,
+  width = 8,
+  height = 5
+)
+
+
 # ------------------------------------------------------------------
 # 8. Model comparison using AIC
 # ------------------------------------------------------------------
@@ -195,12 +202,12 @@ aic_table <- tibble(
 
 write.csv(
   aic_table,
-  file = "cox_aic_comparison.csv",
+  file = "results/cox_aic_comparison.csv",
   row.names = FALSE
 )
 
 aic_table %>%
-  knitr::kable(
+  kable(
     caption = "AIC Comparison of Cox Models",
     digits = 2,
     align = "lrr"

@@ -1,0 +1,3 @@
+"Model","AIC","Delta_AIC"
+"Main Cox model on AMF dataset",6762.98,6.43
+"Exploratory Cox model with imputed AMF",6756.55,0
