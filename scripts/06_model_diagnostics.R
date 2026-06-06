@@ -140,7 +140,7 @@ dev.off()
 
 
 png(
-  filename = "ph_diagnostic_exploratory_model.png",
+  filename = "figures/ph_diagnostic_exploratory_model.png",
   width = 1000,
   height = 800
 )
