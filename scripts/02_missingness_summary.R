@@ -9,13 +9,13 @@
 # 0. Load libraries
 # ------------------------------------------------------------------
 
-source("00_libraries.R")
+source("scripts/00_libraries.R")
 
 # ------------------------------------------------------------------
 # 1. Load cleaned data
 # ------------------------------------------------------------------
 
-load("tree_clean.RData")
+load("data/tree_clean.RData")
 
 # ------------------------------------------------------------------
 # 2. Create missingness summary table
@@ -66,9 +66,6 @@ missing_by_group %>%
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
   )
-
-# Save table
-write.csv(missing_by_group, "missing_summary.csv", row.names = FALSE)
 
 # ------------------------------------------------------------------
 # 4. Missingness visualization

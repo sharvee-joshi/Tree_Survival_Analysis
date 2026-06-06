@@ -9,13 +9,13 @@
 # 0. Load libraries
 # ------------------------------------------------------------------
 
-source("00_libraries.R")
+source("scripts/00_libraries.R")
 
 # ------------------------------------------------------------------
 # 1. Load cleaned data
 # ------------------------------------------------------------------
 
-load("tree_clean.RData")
+load("data/tree_clean.RData")
 
 # ------------------------------------------------------------------
 # 2. Grab Data Dimensions
@@ -27,11 +27,11 @@ data_dimensions <- tibble(
 )
 
 data_dimensions %>%
-  knitr::kable(
+  kable(
     caption = "Dataset Dimensions",
     align = "rr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -60,7 +60,7 @@ microbe_summary <- tree_clean %>%
   )
 
 species_summary %>%
-  knitr::kable(
+  kable(
     caption = "Seedling Counts by Species",
     digits = 2,
     align = "lrr"
@@ -72,7 +72,7 @@ species_summary %>%
   )
 
 light_summary %>%
-  knitr::kable(
+  kable(
     caption = "Seedling Counts by Light Treatment",
     digits = 2,
     align = "lrr"
@@ -84,12 +84,12 @@ light_summary %>%
   )
 
 microbe_summary %>%
-  knitr::kable(
+  kable(
     caption = "Seedling Counts by Microbial Treatment",
     digits = 2,
     align = "lrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -111,12 +111,12 @@ survival_summary <- tree_clean %>%
   )
 
 survival_summary %>%
-  knitr::kable(
+  kable(
     caption = "Summary of Survival Time and Event Status",
     digits = 2,
     align = "rrrrrrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -162,33 +162,33 @@ survival_by_microbe <- tree_clean %>%
   )
 
 survival_by_species %>%
-  knitr::kable(
+  kable(
     caption = "Survival Outcome Summary by Species",
     digits = 2
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
   )
 
 survival_by_light %>%
-  knitr::kable(
+  kable(
     caption = "Survival Outcome Summary by Light Treatment",
     digits = 2
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
   )
 
 survival_by_microbe %>%
-  knitr::kable(
+  kable(
     caption = "Survival Outcome Summary by Microbial Treatment",
     digits = 2
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -241,6 +241,13 @@ trait_plot <- ggplot(trait_compare, aes(x = Value, fill = Data_Type)) +
 
 trait_plot
 
+ggsave(
+  filename = here::here("figures", "imputed_trait_dist.png"),
+  plot = trait_plot,
+  width = 8,
+  height = 5
+)
+
 # ============================================================
 # Remove imputed variables and all remaining rows with NAs
 # ============================================================
@@ -251,5 +258,5 @@ tree_main <- tree_clean %>%
 
 save(
   tree_main,
-  file = "tree_main.RData"
+  file = "data/tree_main.RData"
 )

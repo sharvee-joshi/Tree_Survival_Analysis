@@ -11,13 +11,12 @@
 # 0. Load required packages
 # ------------------------------------------------------------------
 
-source("00_libraries.R")
+source("scripts/00_libraries.R")
 
 # ------------------------------------------------------------------
 # 1. Load raw data
 # ------------------------------------------------------------------
-setwd("C:/Grad School/spring_2026/STAT218/final_project")
-tree_raw <- read_csv("Tree_Data.csv")
+tree_raw <- read_csv("data/Tree_Data.csv")
 
 # ------------------------------------------------------------------
 # 2. Inspect data
@@ -51,6 +50,6 @@ tree_clean <- tree_clean %>%
 
 save(
   tree_clean,
-  file = "tree_clean.RData"
+  file = "data/tree_clean.RData"
 )
 
