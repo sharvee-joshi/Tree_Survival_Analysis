@@ -9,13 +9,13 @@
 # 0. Load libraries
 # ------------------------------------------------------------------
 
-source("00_libraries.R")
+source("scripts/00_libraries.R")
 
 # ------------------------------------------------------------------
 # 1. Load cleaned data
 # ------------------------------------------------------------------
 
-load("tree_main.RData")
+load("data/tree_main.RData")
 
 # ------------------------------------------------------------------
 # 2. Check Data Again
@@ -66,8 +66,8 @@ make_logrank_table <- function(logrank_object, comparison_name) {
 # 4. Kaplan-Meier curve and log-rank test by species
 # ------------------------------------------------------------------
 
-km_species <- survival::survfit(
-  survival::Surv(time, event) ~ species,
+km_species <- survfit(
+  Surv(time, event) ~ species,
   data = tree_main
 )
 
@@ -84,19 +84,24 @@ km_species_plot <- ggsurvplot(
   xlim = c(0, 60),
   break.time.by = 10,
   palette = c(
-    "#16402B",  # deep forest green
-    "#6B8E23",  # olive green
-    "#B8860B"   # dark goldenrod
+    "#16402B",  
+    "#6B8E23",  
+    "#B8860B" 
   ),
   ggtheme = theme_minimal(base_size = 14)
 )
 
 km_species_plot
 
+ggsave(
+  filename = here::here("figures", "km_species.png"),
+  plot = km_species_plot$plot,
+  width = 8,
+  height = 5
+)
 
-
-logrank_species <- survival::survdiff(
-  survival::Surv(time, event) ~ species,
+logrank_species <- survdiff(
+  Surv(time, event) ~ species,
   data = tree_main
 )
 
@@ -105,27 +110,15 @@ logrank_species_table <- make_logrank_table(
   comparison_name = "Species"
 )
 
-logrank_species_table %>%
-  knitr::kable(
-    caption = "Log-Rank Test Comparing Survival Curves by Species",
-    digits = 4,
-    align = "lrrr"
-  ) %>%
-  kableExtra::kable_styling(
-    full_width = FALSE,
-    position = "center",
-    bootstrap_options = c("striped", "hover", "condensed")
-  )
 # ------------------------------------------------------------------
 # 5. Kaplan-Meier curve and log-rank test by light treatment
 # ------------------------------------------------------------------
-
-km_light <- survival::survfit(
-  survival::Surv(time, event) ~ light,
+km_light <- survfit(
+  Surv(time, event) ~ light,
   data = tree_main
 )
 
-km_light_plot <- survminer::ggsurvplot(
+km_light_plot <- ggsurvplot(
   km_light,
   data = tree_main,
   conf.int = FALSE,
@@ -138,17 +131,22 @@ km_light_plot <- survminer::ggsurvplot(
   xlim = c(0, 60),
   break.time.by = 10,
   palette = c(
-    "#16402B",  # High = dark forest green
-    "#B8860B"   # Low = warm golden brown
+    "#16402B",  
+    "#B8860B" 
   ),
   ggtheme = theme_minimal(base_size = 14)
 )
 
 km_light_plot
+ggsave(
+  filename = here::here("figures", "km_light.png"),
+  plot = km_light_plot$plot,
+  width = 8,
+  height = 5
+)
 
-
-logrank_light <- survival::survdiff(
-  survival::Surv(time, event) ~ light,
+logrank_light <- survdiff(
+  Surv(time, event) ~ light,
   data = tree_main
 )
 
@@ -157,53 +155,50 @@ logrank_light_table <- make_logrank_table(
   comparison_name = "Light Treatment"
 )
 
-logrank_light_table %>%
-  knitr::kable(
-    caption = "Log-Rank Test Comparing Survival Curves by Light Treatment",
-    digits = 4,
-    align = "lrrr"
-  ) %>%
-  kableExtra::kable_styling(
-    full_width = FALSE,
-    position = "center",
-    bootstrap_options = c("striped", "hover", "condensed")
-  )
 
 # ------------------------------------------------------------------
 # 6. Kaplan-Meier curve and log-rank test by microbial treatment
 # ------------------------------------------------------------------
+tree_no_none <- tree_main %>%
+  filter(microbe != "None") %>%
+  mutate(microbe = droplevels(factor(microbe)))
 
-km_microbe <- survival::survfit(
-  survival::Surv(time, event) ~ microbe,
-  data = tree_main
+km_microbe <- survfit(
+  Surv(time, event) ~ microbe,
+  data = tree_no_none
 )
 
-km_microbe_plot <- survminer::ggsurvplot(
+km_microbe_plot <- ggsurvplot(
   km_microbe,
-  data = tree_main,
+  data = tree_no_none,
   conf.int = FALSE,
   risk.table = FALSE,
   pval = FALSE,
   xlab = "Time",
   ylab = "Estimated Survival Probability",
   legend.title = "Microbe",
-  legend.labs = c("Combined", "Control", "Large", "None", "Small"),
+  legend.labs = c("Combined", "Control", "Large", "Small"),
   xlim = c(0, 60),
   break.time.by = 10,
   palette = c(
-    "#16402B",  # Combined = dark forest green
-    "#6B8E23",  # Control = olive green
-    "#B8860B",  # Large = golden brown
-    "#8B5A2B",  # None = brown
-    "#A7C957"   # Small = light leaf green
+    "#16402B",
+    "#6B8E23",
+    "#B8860B",
+    "#A7C957"
   ),
   ggtheme = theme_minimal(base_size = 14)
 )
 
 print(km_microbe_plot)
+ggsave(
+  filename = here::here("figures", "km_microbe.png"),
+  plot = km_microbe_plot$plot,
+  width = 8,
+  height = 5
+)
 
-logrank_microbe <- survival::survdiff(
-  survival::Surv(time, event) ~ microbe,
+logrank_microbe <- survdiff(
+  Surv(time, event) ~ microbe,
   data = tree_main
 )
 
@@ -212,17 +207,6 @@ logrank_microbe_table <- make_logrank_table(
   comparison_name = "Microbial Treatment"
 )
 
-logrank_microbe_table %>%
-  knitr::kable(
-    caption = "Log-Rank Test Comparing Survival Curves by Microbial Treatment",
-    digits = 4,
-    align = "lrrr"
-  ) %>%
-  kableExtra::kable_styling(
-    full_width = FALSE,
-    position = "center",
-    bootstrap_options = c("striped", "hover", "condensed")
-  )
 
 # ------------------------------------------------------------------
 # 7. Combine log-rank test results into one table
@@ -239,17 +223,17 @@ save(
   logrank_light,
   logrank_microbe,
   logrank_all,
-  file = "km_logrank_results.RData"
+  file = "results/km_logrank_results.RData"
 )
 
 
 logrank_all %>%
-  knitr::kable(
+  kable(
     caption = "Summary of Log-Rank Tests",
     digits = 4,
     align = "lrrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -257,3 +241,7 @@ logrank_all %>%
 
 
 
+save(
+  tree_no_none,
+  file = "data/tree_no_none.RData"
+)

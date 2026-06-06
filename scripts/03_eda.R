@@ -65,7 +65,7 @@ species_summary %>%
     digits = 2,
     align = "lrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -77,7 +77,7 @@ light_summary %>%
     digits = 2,
     align = "lrr"
   ) %>%
-  kableExtra::kable_styling(
+  kable_styling(
     full_width = FALSE,
     position = "center",
     bootstrap_options = c("striped", "hover", "condensed")
@@ -229,8 +229,8 @@ trait_plot <- ggplot(trait_compare, aes(x = Value, fill = Data_Type)) +
   facet_wrap(~ Trait, scales = "free", ncol = 2) +
   scale_fill_manual(
     values = c(
-      "Observed" = "#FFFFFF",  # soft sage
-      "Imputed"  = "#0F5132"   # forest green
+      "Observed" = "#FFFFFF", 
+      "Imputed"  = "#0F5132"  
     )
   ) +
   labs(
