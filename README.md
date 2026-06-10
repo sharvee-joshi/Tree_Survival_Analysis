@@ -70,8 +70,14 @@ source("scripts/05_cox_models.R")
 source("scripts/06_model_diagnostics.R")
 ```
 ### Output
-Running the scripts will generate:
-- add here
+Running the scripts will generate cleaned datasets, summary tables, exploratory figures, Kaplan-Meier plots, Cox Model results, and diagnostic plots. Main outputs include:
+- Cleaned analysis datasets used for survival modeling
+- Exploratory data analysis figures showing survival patterns by species, light, and microbial treatment
+- Kaplan-Meier survival curves comparing survival across all groups
+- Log-rank test results comparing survival distributions across groups
+- Cox proportional hazards model tables with hazard ratios, $95/%$ confidence intervals, and p-values
+- Model comparison results for the main Cox model and exploratory AMF model
+- Diagnostic plots for evaluating Cox model assumptions
 
 
 
